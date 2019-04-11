@@ -1,6 +1,6 @@
 {
   "name": "unsourcemap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Unpack JavaScript sourcemap",
   "main": "index.js",
   "bin": {

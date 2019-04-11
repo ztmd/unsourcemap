@@ -10,6 +10,7 @@ const pkg = require('../package.json');
 function core(argv, callback) {
   let options = {};
   let input;
+  let check = true;
 
   if (argv[0] && argv[0][0] !== '-') {
     input = argv.shift();
@@ -58,6 +59,14 @@ function core(argv, callback) {
       case '--input':
         input = argv.shift();
         break;
+      case '-c':
+      case '--check':
+      case '--strict':
+        check = true;
+        break;
+      case '--no-check':
+        check = false;
+        break;
       default:
         setOptions(arg);
         break;
@@ -74,9 +83,29 @@ function core(argv, callback) {
     return;
   }
 
-  let raw = fs.readFileSync(input, 'utf-8');
+  let curFileStat;
+  try {
+    curFileStat = fs.statSync(input);
+  } catch (e) {
+    process.stdout.write(e.toString() + '\n');
+    process.exit(0);
+  }
 
-  unsourcemap(raw, options);
+  let fileList;
+  let raw;
+
+  if (curFileStat.isDirectory()) {
+    fileList = fs.readdirSync(input);
+    fileList.forEach(name => {
+      if (!check || /\.map$/.test(name)) {
+        raw = fs.readFileSync(path.join(input, name), 'utf-8');
+        unsourcemap(raw, options);
+      }
+    });
+  } else {
+    raw = fs.readFileSync(input, 'utf-8');
+    unsourcemap(raw, options);
+  }
 
   return callback();
 

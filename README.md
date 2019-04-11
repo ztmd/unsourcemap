@@ -22,11 +22,11 @@ yarn global add unsourcemap
 unsourcemap input [options]
 ```
 
-Options above can all be specified with a prefix `--`.
-
 See [help](docs/help) for more information.
 
-> Caution: `input` is a required parameter.
+`input` is a required parameter, it can also be a directory.
+
+If `input` is a directory, `unsourcemap` will traverse all the files in this directory and deal each file. Use `--no-check` to ignore checking the filename is end with `.map`.
 
 ## Examples
 
@@ -34,7 +34,7 @@ See [help](docs/help) for more information.
 unsourcemap bundle.js.map
 unsourcemap bundle.js.map --output app
 unsourcemap --input=bundle.js.map --force
-unsourcemap -i=bundle.js.map --verbose
+unsourcemap -i=bundle.js.map --verbose --no-dot
 ```
 
 ## Available Options
@@ -112,6 +112,13 @@ Print the filepath which is written successful.
 
 Force writeFile even if the file is already existed.
 
+### `--check`/`-c`/`--strict`
+
+- type: Boolean
+- default: **true**
+
+Check filename is end with `.map`.
+
 ## Development
 
 Checkout this repository locally, then:
@@ -126,6 +133,20 @@ node bin/unsourcemap
 - [Introduction to JavaScript Source Maps](https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/)
 - [mozilla/source-map](https://github.com/mozilla/source-map)
 - [Variable-length quantity](https://en.wikipedia.org/wiki/Variable-length_quantity)
+
+## Changelog
+
+### v0.0.2
+
+> 2019-04-12
+
+- support directory
+
+### v0.0.1
+
+> 2019-04-12
+
+- first publish
 
 ## License
 
