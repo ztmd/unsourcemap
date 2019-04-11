@@ -17,5 +17,3 @@ Options:
   --async                   Use async writeFile.
   --verbose                 Log every file record.
   --dot                     Replace `/.` in webpack mode.
-
-For more information, please visit the `README.md`.

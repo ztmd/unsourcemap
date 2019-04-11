@@ -19,7 +19,7 @@ const values = {};
 
 function sanitize(input = '', replacement = '_') {
   let ret = (input + '')
-    .replace(/^\.+$|[\.\s]+$|^(\.){1,}/, replacement)
+    .replace(/^\.+$|[\.\s]+$/, replacement)
     .replace(/[\?<>:\*\|":\x00-\x1f\x80-\x9f]/g, replacement)
     .replace(/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i, replacement)
     .replace(/(\/|\\){1,}/g, '/');
