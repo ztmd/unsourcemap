@@ -1,0 +1,129 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const unsourcemap = require('../');
+const pkg = require('../package.json');
+
+function core(argv, callback) {
+  let options = {};
+  let input;
+
+  if (argv[0] && argv[0][0] !== '-') {
+    input = argv.shift();
+  }
+
+  while (argv.length) {
+    let arg = argv.shift();
+
+    if (!arg) {
+      continue;
+    }
+
+    if (arg.indexOf('--') === 0) {
+      // --key
+      arg = arg.split('=');
+      if (arg.length > 1) {
+        argv.unshift(arg[1]);
+      }
+      arg = arg[0];
+    } else if (arg[0] === '-') {
+      arg = arg.split('=');
+      if (arg[0].length > 2) {
+        process.stdout.write(`not support abbrev \`${arg[0]}\`.\n`);
+        return;
+      } else if (arg.length > 1) {
+        argv.unshift(arg[1]);
+      }
+      arg = arg[0];
+    }
+
+    switch (arg) {
+      case '-h':
+      case '--help':
+        return help();
+      case '-v':
+      case '--version':
+        return version();
+      case '-o':
+      case '--output':
+        options.output = argv.shift();
+        break;
+      case '--force':
+        options.force = true;
+        break;
+      case '-i':
+      case '--input':
+        input = argv.shift();
+        break;
+      default:
+        setOptions(arg);
+        break;
+    }
+  }
+
+  if (!input) {
+    process.stdout.write('`input` is required, use `--help` to get more information.\n');
+    return;
+  }
+
+  if (!fs.existsSync(input)) {
+    process.stdout.write(`file: \`${input}\` does not exist.\n`);
+    return;
+  }
+
+  let raw = fs.readFileSync(input, 'utf-8');
+
+  unsourcemap(raw, options);
+
+  return callback();
+
+  function setOptions(curArg) {
+
+    let curArgName = getArgName(curArg);
+
+    if (unsourcemap.defaults.hasOwnProperty(curArgName)) {
+      if (typeof unsourcemap.defaults[curArgName] === 'boolean') {
+        options[curArgName] = curArg.indexOf('--no-') !== 0;
+      } else {
+        let curValue = argv.shift();
+        if (curValue) {
+          if (curValue[0] === '-') {
+            argv.unshift(curValue);
+          } else {
+            options[curArgName] = curValue;
+          }
+        }
+      }
+    }
+  }
+
+  function getArgName(str) {
+    return str.replace(/^--(no-)?/, '')
+      .replace(/-(\w)/g, (_, a) => a.toUpperCase());
+  }
+}
+
+function help() {
+  let helpFilePath = path.join(__dirname, '../docs/help');
+  let text = fs.readFileSync(helpFilePath, 'utf-8');
+  process.stdout.write(text + '\n');
+}
+
+function version() {
+  process.stdout.write(pkg.version + '\n');
+}
+
+if (!module.parent) {
+  process.title = pkg.name;
+  core(process.argv.slice(2), (err, code) => {
+    if (err) {
+      throw err;
+    }
+    return process.exit(code || 0);
+  });
+} else {
+  module.exports = core;
+}

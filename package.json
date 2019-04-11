@@ -1,0 +1,26 @@
+{
+  "name": "unsourcemap",
+  "version": "0.0.1",
+  "description": "Unpack JavaScript sourcemap",
+  "main": "index.js",
+  "bin": {
+    "unsourcemap": "./bin/unsourcemap",
+    "us": "./bin/unsourcemap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ztmd/unsourcemap.git"
+  },
+  "keywords": [
+    "sourcemap",
+    "unpack",
+    "destructure",
+    "reverse"
+  ],
+  "author": "xovel <xovel@vip.qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ztmd/unsourcemap/issues"
+  },
+  "homepage": "https://github.com/ztmd/unsourcemap#readme"
+}

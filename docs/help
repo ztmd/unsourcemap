@@ -1,0 +1,21 @@
+Usage: unsourcemap [input] [--options] [value]
+       unsourcemap [input] [--options=value]
+
+Options:
+  # SYSTEM
+  -v, --version             Print current version.
+  -h, --help                Print this help.
+
+  # VALUE
+  -i, --input               Directory for input.
+  -o, --output              Directory for output.
+  --mode                    Sourcemap mode, support `webpack` only.
+  --replacement             Replacement for sanitize filepath.
+
+  # BOOLEAN
+  --force                   Overwrite output file.
+  --async                   Use async writeFile.
+  --verbose                 Log every file record.
+  --dot                     Replace `/.` in webpack mode.
+
+For more information, please visit the `README.md`.
