@@ -138,13 +138,13 @@ node bin/unsourcemap
 
 ### v0.0.2
 
-> 2019-04-12
+> 2019-04-11
 
 - support directory
 
 ### v0.0.1
 
-> 2019-04-12
+> 2019-04-11
 
 - first publish
 
