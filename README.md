@@ -112,12 +112,16 @@ Print the filepath which is written successful.
 
 Force writeFile even if the file is already existed.
 
-### `--check`/`-c`/`--strict`
+### `--check`
 
 - type: Boolean
 - default: **true**
 
 Check filename is end with `.map`.
+
+### `-d`/`--depth`
+
+Max depth about directory to extract.
 
 ## Development
 
@@ -135,6 +139,14 @@ node bin/unsourcemap
 - [Variable-length quantity](https://en.wikipedia.org/wiki/Variable-length_quantity)
 
 ## Changelog
+
+### v0.0.3
+
+> 2019-05-20
+
+- drop support for `--strict` and `-c`, use `--check` exactly.
+- remove .vscode
+- support directory recrusive
 
 ### v0.0.2
 

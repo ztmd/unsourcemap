@@ -4,11 +4,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const unsourcemap = require('../');
+const unsourcemap = require('..');
 const pkg = require('../package.json');
 
 function core(argv, callback) {
-  let options = {};
+  let options = {
+    output: 'dist',
+    depth: 10
+  };
   let input;
   let check = true;
 
@@ -59,13 +62,18 @@ function core(argv, callback) {
       case '--input':
         input = argv.shift();
         break;
-      case '-c':
       case '--check':
-      case '--strict':
         check = true;
         break;
       case '--no-check':
         check = false;
+        break;
+      case '-d':
+      case '--depth':
+        const depth = +argv.shift();
+        if (depth) {
+          options.depth = depth;
+        }
         break;
       default:
         setOptions(arg);
@@ -83,31 +91,36 @@ function core(argv, callback) {
     return;
   }
 
-  let curFileStat;
-  try {
-    curFileStat = fs.statSync(input);
-  } catch (e) {
-    process.stdout.write(e.toString() + '\n');
-    process.exit(0);
-  }
-
-  let fileList;
-  let raw;
-
-  if (curFileStat.isDirectory()) {
-    fileList = fs.readdirSync(input);
-    fileList.forEach(name => {
-      if (!check || /\.map$/.test(name)) {
-        raw = fs.readFileSync(path.join(input, name), 'utf-8');
-        unsourcemap(raw, options);
-      }
-    });
+  if (isDirectory(input)) {
+    handleDirectory(input, options);
   } else {
-    raw = fs.readFileSync(input, 'utf-8');
-    unsourcemap(raw, options);
+    doUnsourcemap(input, options);
   }
 
   return callback();
+
+  function doUnsourcemap(input, options) {
+    const raw = fs.readFileSync(input, 'utf-8').toString();
+    unsourcemap(raw, options);
+  }
+
+  function handleDirectory(dir, options, depth = 1) {
+    if (depth > options.depth) {
+      return;
+    }
+    const fileList = fs.readdirSync(dir);
+    fileList.forEach(name => {
+      const filepath = path.join(dir, name);
+      if (isDirectory(filepath)) {
+        handleDirectory(filepath, {
+          ...options,
+          output: path.join(options.output, name)
+        }, depth + 1);
+      } else if (!check || /\.map$/.test(name)) {
+        doUnsourcemap(filepath, options);
+      }
+    });
+  }
 
   function setOptions(curArg) {
 
@@ -134,6 +147,18 @@ function core(argv, callback) {
       .replace(/-(\w)/g, (_, a) => a.toUpperCase());
   }
 }
+
+function isDirectory(filepath) {
+  try {
+    let fileStat = fs.statSync(filepath);
+    return fileStat.isDirectory();
+  } catch (e) {
+    //
+    console.error(e);
+  }
+  return false;
+}
+
 
 function help() {
   let helpFilePath = path.join(__dirname, '../docs/help');

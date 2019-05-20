@@ -11,6 +11,7 @@ Options:
   -o, --output              Directory for output.
   --mode                    Sourcemap mode, support `webpack` only.
   --replacement             Replacement for sanitize filepath.
+  -d, --depth               Max depth about directory to extract.
 
   # BOOLEAN
   --force                   Overwrite output file.

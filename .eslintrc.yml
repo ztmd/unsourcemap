@@ -1,0 +1,7 @@
+extends:
+  - zob
+
+rules:
+  semi: 2
+  no-control-regex: 0
+  complexity: 0
